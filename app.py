@@ -54,4 +54,4 @@ def add_item():
     created_at = datetime.utcnow().isoformat()
     sheet.append_row([row_id, item, "未完了", rating, note, created_at])
     return jsonify({"status": "ok", "id": row_id, "item": item, "rating": rating, "note": note})
-``
+
