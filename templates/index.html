@@ -1,16 +1,28 @@
-
 <!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
   <title>Shared TODO（★評価 & Note付き）</title>
   <style>
-    .stars { display: inline-flex; gap: 4px; }
-    .stars input { display: none; }
-    .stars label { font-size: 20px; cursor: pointer; color: #ccc; }
+    .stars {
+      display: inline-flex;
+      flex-direction: row-reverse;
+      gap: 4px;
+    }
+    .stars input {
+      display: none;
+    }
+    .stars label {
+      font-size: 20px;
+      cursor: pointer;
+      color: #ccc;
+    }
     .stars input:checked ~ label,
     .stars label:hover,
-    .stars label:hover ~ label { color: #f5b301; }
+    .stars label:hover ~ label {
+      color: #f5b301;
+    }
+
     table { border-collapse: collapse; width: 100%; }
     th, td { border: 1px solid #ddd; padding: 8px; }
     form.inline { display: inline; }
@@ -18,60 +30,62 @@
 </head>
 <body>
 
-  <h1>TODO一覧</h1>
+<h1>TODO一覧</h1>
 
-  <!-- 追加フォーム -->
-  <forml_for(
-    <input type="text" name="item" placeholder="やること" required>
+<!-- 追加フォーム -->
+<form method="post" action="{{ url_for('add_item') }}">
+  <input type="text" name="item" placeholder="やること" required>
 
-    <!-- ★5段階評価（任意） -->
-    <span class="stars" title="評価（任意）">
-      <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
-      <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
-      <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
-      <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
-      <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
-    </span>
+  <!-- ★5段階評価 -->
+  <span class="stars">
+    <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+    <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+    <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+    <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+    <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+  </span>
 
-    <!-- Note（任意・空OK） -->
-    <input type="text" name="note" placeholder="メモ（任意）">
+  <!-- Note -->
+  <input type="text" name="note" placeholder="メモ（任意）">
 
-    <button type="submit">追加</button>
-  </form>
+  <button type="submit">追加</button>
+</form>
 
-  <!-- 一覧 -->
-  <table>
-    <thead>
-      <tr>
-        <th>タスク</th>
-        <th>状態</th>
-        <th>評価</th>
-        <th>Note</th>
-        <th>作成日時(UTC)</th>
-        <th>操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for r in records %}
-      <tr>
-        <td>{{ r.item }}</td>
-        <td>{{ r.status }}</td>
-        <td>
-          {% if r.rating %}
-            {% for i in range(r.rating|int) %}★{% endfor %}
-          {% else %}-{% endif %}
-        </td>
-        <td>{{ r.note or '' }}</td>
-        <td>{{ r.created_at }}</td>
-        <td>
-          {{ url_for(
-            <button type="submit">削除</button>
-          </form>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<!-- 一覧 -->
+<table>
+  <thead>
+    <tr>
+      <th>タスク</th>
+      <th>状態</th>
+      <th>評価</th>
+      <th>Note</th>
+      <th>作成日時(UTC)</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in records %}
+    <tr>
+      <td>{{ r.item }}</td>
+      <td>{{ r.status }}</td>
+      <td>
+        {% if r.rating %}
+          {% for i in range(r.rating|int) %}★{% endfor %}
+        {% else %}
+          -
+        {% endif %}
+      </td>
+      <td>{{ r.note or '' }}</td>
+      <td>{{ r.created_at }}</td>
+      <td>
+        <form class="inline" method="post" action="{{ url_for('delete_item', row_id=r.id) }}">
+          <button type="submit">削除</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 </body>
 </html>
