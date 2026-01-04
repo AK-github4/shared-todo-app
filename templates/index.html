@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>TODO with ★評価 & Note</title>
+  <title>Shared TODO（★評価 & Note付き）</title>
   <style>
     .stars { display: inline-flex; gap: 4px; }
     .stars input { display: none; }
@@ -13,6 +13,7 @@
     .stars label:hover ~ label { color: #f5b301; }
     table { border-collapse: collapse; width: 100%; }
     th, td { border: 1px solid #ddd; padding: 8px; }
+    form.inline { display: inline; }
   </style>
 </head>
 <body>
@@ -20,20 +21,16 @@
   <h1>TODO一覧</h1>
 
   <!-- 追加フォーム -->
-  <form method="post" action="{{ url name="item" placeholder="やること" required>
+  {{ url_for(
+    <input type="text" name="item" placeholder="やること" required>
 
     <!-- ★5段階評価（任意） -->
     <span class="stars" title="評価（任意）">
-      <input type="radio" id="star5" name="rating" value="5">
-      <label for="star5">★</label>
-      <input type="radio" id="star4" name="rating" value="4">
-      <label for="star4">★</label>
-      <input type="radio" id="star3" name="rating" value="3">
-      <label for="star3">★</label>
-      <input type="radio" id="star2" name="rating" value="2">
-      <label for="star2">★</label>
-      <input type="radio" id="star1" name="rating" value="1">
-      <label for="star1">★</label>
+      <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+      <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+      <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+      <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+      <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
     </span>
 
     <!-- Note（任意・空OK） -->
@@ -49,7 +46,7 @@
         <th>タスク</th>
         <th>状態</th>
         <th>評価</th>
-        <th>Note</th>          <!-- 新規列 -->
+        <th>Note</th>
         <th>作成日時(UTC)</th>
         <th>操作</th>
       </tr>
@@ -64,10 +61,14 @@
             {% for i in range(r.rating|int) %}★{% endfor %}
           {% else %}-{% endif %}
         </td>
-        <td>{{ r.note or '' }}</td>      <!-- Noteは空OK -->
+        <td>{{ r.note or '' }}</td>
         <td>{{ r.created_at }}</td>
         <td>
-          <form method="post" action="{{ url_for('delete_item', row_id=r.id) }}" onsubmit="return confirm('/tr>
+          {{ url_for(
+            <button type="submit">削除</button>
+          </form>
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
