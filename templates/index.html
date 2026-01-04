@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>共有ToDo</title>
+</head>
+<body>
+    <h1>共有ToDoリスト</h1>
+
+    <form action="/add_web" method="post">
+        <input type="text" name="item" placeholder="やりたいこと">
+        <button type="submit">追加</button>
+    </form>
+
+    <h2>一覧</h2>
+    <ul>
+        {% for row in records %}
+            <li>{{ row.item }} - {{ row.status }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
